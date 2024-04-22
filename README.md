@@ -30,7 +30,7 @@ Direct usage
 ```python
 # Example 1
 from rest_framework import serializers
-from drf_serializer_dumps.decoratos import serializer_dumps
+from drf_serializer_dumps.decorators import serializer_dumps
 
 
 class PersonCars(serializers.Serializer):
@@ -52,7 +52,7 @@ print(result)
 # Example 2
 from rest_framework import serializers
 from django.contrib.postgres.fields import ArrayField
-from drf_serializer_dumps.decoratos import serializer_dumps
+from drf_serializer_dumps.decorators import serializer_dumps
 
 
 class Person(models.Model):
