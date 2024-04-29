@@ -1,34 +1,27 @@
 from __future__ import annotations
+
 import json
 from datetime import date, datetime, time, timedelta
-from types import UnionType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Union,
-    get_args,
-    get_origin,
-    get_type_hints,
-)
+from typing import TYPE_CHECKING, Any, Union, get_args, get_origin, get_type_hints
 from uuid import UUID, uuid4
 
 from django.utils import timezone
-from drf_spectacular.utils import OpenApiTypes
+from drf_spectacular.types import OpenApiTypes
 from rest_framework import serializers
 
 if TYPE_CHECKING:
     from collections import OrderedDict
 
-__all__ = ('serializer_dumps',)
+    from drf_spectacular.utils import _SerializerType
 
-SerializerType = serializers.Serializer | type[serializers.Serializer]
+__all__ = ('serializer_dumps',)
 
 _uuid = uuid4()
 _now = timezone.now()
 
 
 def serializer_dumps(
-    klass: SerializerType,
+    klass: _SerializerType,
     exclude_fields: list[str] | None = None,
     renew_type_value: bool = False,
     extend_type_map: dict[type, Any] | None = None,
@@ -65,7 +58,7 @@ def serializer_dumps(
                 fields = '__all__'
         -----------------------------------------------
         serializer_dumps(PersonSerializer)
-        {'name': 'string', 'phones': ['string']}
+        {'id': 1, 'name': 'string', 'phones': ['string']}
 
     #### Integration with drf-spectacular extend_schema decorator::
 
@@ -139,10 +132,10 @@ def serializer_dumps(
     }
 
     def _get_type_value(
-        klass: SerializerType,
+        klass: _SerializerType,
         field_name: str,
         field_instance: serializers.SerializerMethodField,
-    ) -> tuple[Any, type]:
+    ) -> tuple[Any, Any]:
         """
         Получить типизацию у метода SerializerMethodField
         """
@@ -159,8 +152,8 @@ def serializer_dumps(
         annotation = get_type_hints(method).get('return')
 
         # origin = get_origin(annotation)
-        # if origin is Union or origin is UnionType:
-        if get_origin(annotation) in (Union, UnionType):
+        # if origin is Union or origin is type(Union):
+        if get_origin(annotation) in (Union, type(Union)):
             annotation = get_args(annotation)[0]
 
         type_value = type_mapping.get(open_api_type)
@@ -170,7 +163,7 @@ def serializer_dumps(
         return type_value, annotation
 
     def _walk_fields_recursively(
-        klass: SerializerType, exclude_fields: list[str] | None = None
+        klass: _SerializerType, exclude_fields: list[str] | None = None
     ) -> dict[str, Any]:
         """
         Рекурсивно проходит по всем полям и вложенным сериализаторам
@@ -179,8 +172,8 @@ def serializer_dumps(
         if exclude_fields is None:
             exclude_fields = []
 
-        fields: OrderedDict[str, SerializerType] = klass().get_fields()
-        example_val = {}
+        fields: OrderedDict[str, _SerializerType] = klass().get_fields()
+        example_val: dict[str, Any] = {}
 
         for field_name, field_instance in fields.items():
             if field_name in exclude_fields:
