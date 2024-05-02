@@ -19,6 +19,11 @@ class PersonSerializer1(serializers.Serializer):
     age = serializers.IntegerField()
     birthday = serializers.DateTimeField()
 
+    field_without_annotation = serializers.SerializerMethodField()
+
+    def get_field_without_annotation(self, obj: object):  # type: ignore[no-untyped-def]
+        return 'Hello world!'
+
     height = serializers.SerializerMethodField()
 
     def get_height(self, obj: object) -> int:

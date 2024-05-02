@@ -14,6 +14,7 @@ def test_serializer_dumps() -> None:
     assert result == {
         'name': 'string',
         'birthday': ANY,
+        'field_without_annotation': None,
         'height': 1,
         'weight': 1,
         'cars': [{'car_name': 'string', 'car_price': 1}],
@@ -33,6 +34,7 @@ def test_renew_type_value() -> None:
         'name': 'string',
         'age': 1,
         'birthday': ANY,
+        'field_without_annotation': None,
         'height': 1,
         'weight': 1,
         'cars': [{'car_name': 'string', 'car_price': 1}],

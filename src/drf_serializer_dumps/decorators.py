@@ -14,9 +14,12 @@ if TYPE_CHECKING:
 
     from drf_spectacular.utils import _SerializerType
 
-__all__ = ('serializer_dumps',)
+try:
+    from types import UnionType  # type: ignore[attr-defined]
+except ImportError:
+    UnionType = Union
 
-UnionType = type(int | str)  # py 3.8 does not have types.UnionType
+__all__ = ('serializer_dumps',)
 
 _uuid = uuid4()
 _now = timezone.now()
@@ -220,12 +223,12 @@ def serializer_dumps(
                             f'у поля: "{field_name}".'
                         )
                 else:
-                    if issubclass(annotation, serializers.Serializer):
+                    if annotation is not None and issubclass(annotation, serializers.Serializer):
                         example_val[field_name] = _walk_fields_recursively(annotation, exclude_fields)
                     else:
                         example_val[field_name] = None
                         print(
-                            f'Обнаружена неизвестная аннотация: "{annotation.__name__}" '
+                            f'Обнаружена неизвестная аннотация: "{type(annotation).__name__}" '
                             f'Для поля: "{field_name}" было установлено значение "None".'
                         )
             else:
