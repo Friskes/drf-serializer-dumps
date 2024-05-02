@@ -60,10 +60,9 @@ ci = [
 
 
 [project.urls]
-"Documentation" = "https://github.com/Friskes/drf-serializer-dumps"  # Home-page in pip show
-"Repository" = "https://github.com/Friskes/drf-serializer-dumps"
-"Changelog" = "https://github.com/Friskes/drf-serializer-dumps/releases/"
-"Bug Reports" = "https://github.com/Friskes/drf-serializer-dumps/issues"
+Homepage = "https://github.com/Friskes/drf-serializer-dumps"
+Changelog = "https://github.com/Friskes/drf-serializer-dumps/releases/"
+Issues = "https://github.com/Friskes/drf-serializer-dumps/issues"
 
 
 [build-system]
