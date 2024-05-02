@@ -16,6 +16,8 @@ if TYPE_CHECKING:
 
 __all__ = ('serializer_dumps',)
 
+UnionType = type(int | str)  # py 3.8 does not have types.UnionType
+
 _uuid = uuid4()
 _now = timezone.now()
 
@@ -152,8 +154,8 @@ def serializer_dumps(
         annotation = get_type_hints(method).get('return')
 
         # origin = get_origin(annotation)
-        # if origin is Union or origin is type(Union):
-        if get_origin(annotation) in (Union, type(Union)):
+        # if origin is Union or origin is UnionType:
+        if get_origin(annotation) in (Union, UnionType):
             annotation = get_args(annotation)[0]
 
         type_value = type_mapping.get(open_api_type)
