@@ -94,6 +94,7 @@ def serializer_dumps(
         _now = timezone.now()
 
     field_type_mapping = {
+        serializers.ChoiceField: 'string',
         serializers.CharField: 'string',
         serializers.FloatField: 1.0,
         serializers.BooleanField: False,
@@ -196,7 +197,11 @@ def serializer_dumps(
                 if base_field_cls is not serializers.Field and not issubclass(
                     base_field_cls, serializers.Serializer
                 ):
-                    example_val[field_name] = base_field_cls().to_representation(
+                    kwargs = {}
+                    if isinstance(field_instance, serializers.ChoiceField):
+                        kwargs.update({'choices': ()})
+
+                    example_val[field_name] = base_field_cls(**kwargs).to_representation(
                         type_mapping.get(base_field_cls)
                     )
                 elif isinstance(field_instance, serializers.Serializer):

@@ -179,6 +179,7 @@ extend-select = [
     "TID",    # https://docs.astral.sh/ruff/rules/#flake8-tidy-imports-tid
     "TCH",    # https://docs.astral.sh/ruff/rules/#flake8-type-checking-tch
     "INT",    # https://docs.astral.sh/ruff/rules/#flake8-gettext-int
+    "TD",     # https://docs.astral.sh/ruff/rules/#flake8-todos-td
     "FLY",    # https://docs.astral.sh/ruff/rules/#flynt-fly
     "PERF",   # https://docs.astral.sh/ruff/rules/#perflint-perf
     "LOG",    # https://docs.astral.sh/ruff/rules/#flake8-logging-log
@@ -188,8 +189,8 @@ extend-select = [
 ]
 ignore = [
     # https://docs.astral.sh/ruff/rules/#pyflakes-f
-    "F401",    # (не ругаться на неиспользуемые импорты)
-    "F841",    # (не ругаться на неиспользуемые переменные)
+    # "F401",    # (не ругаться на неиспользуемые импорты)
+    # "F841",    # (не ругаться на неиспользуемые переменные)
     "F403",    # (не ругаться на использование from ... import *)
     # https://docs.astral.sh/ruff/rules/#pyupgrade-up
     "UP031",   # (не ругаться на форматирование с помощью %s)
@@ -221,6 +222,8 @@ ignore = [
     # https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4
     # {} VS dict()  # https://switowski.com/blog/dict-function-vs-literal-syntax/
     "C408",    # (не ругаться на использование классов коллекций вместо их литералов)
+    "TD001",   # (не ругаться на использование FIXME и XXX)
+    "TD003",   # (не ругаться на отсутствие ссылки на issues)
 ]
 # Не давать исправлять эти ошибки в тултипе, и в том числе автоматически при линте через команду
 unfixable = [

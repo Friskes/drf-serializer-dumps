@@ -12,6 +12,7 @@ class PersonCars(serializers.Serializer):
 
 class PersonHouse(serializers.Serializer):
     address = serializers.CharField()
+    cfield = serializers.ChoiceField(choices=())
 
 
 class PersonSerializer1(serializers.Serializer):

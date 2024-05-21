@@ -18,7 +18,7 @@ def test_serializer_dumps() -> None:
         'height': 1,
         'weight': 1,
         'cars': [{'car_name': 'string', 'car_price': 1}],
-        'house': {'address': 'string'},
+        'house': {'address': 'string', 'cfield': 'string'},
     }
 
 
@@ -38,7 +38,7 @@ def test_renew_type_value() -> None:
         'height': 1,
         'weight': 1,
         'cars': [{'car_name': 'string', 'car_price': 1}],
-        'house': {'address': 'string'},
+        'house': {'address': 'string', 'cfield': 'string'},
     }
 
     result1 = serializer_dumps(PersonSerializer1, renew_type_value=True)
