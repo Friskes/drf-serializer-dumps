@@ -1,3 +1,6 @@
+import sys
+from typing import List  # noqa: UP035
+
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
@@ -37,6 +40,18 @@ class PersonSerializer1(serializers.Serializer):
         return 78
 
     cars = PersonCars(many=True)
+
+    cars2 = serializers.SerializerMethodField()
+
+    def get_cars2(self, obj: object) -> List[PersonCars]:  # type: ignore[empty-body]  # noqa: UP006
+        """It doesn't matter what to return in the test."""
+
+    if sys.version_info >= (3, 9):  # noqa: UP036
+        cars3 = serializers.SerializerMethodField()
+
+        # list[type] support added only in python >= 3.9
+        def get_cars3(self, obj: object) -> list[PersonCars]:  # type: ignore[empty-body]
+            """It doesn't matter what to return in the test."""
 
     house = PersonHouse()
 

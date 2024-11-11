@@ -2,7 +2,18 @@ from __future__ import annotations
 
 import json
 from datetime import date, datetime, time, timedelta
-from typing import TYPE_CHECKING, Any, Union, get_args, get_origin, get_type_hints
+from typing import (  # noqa: UP035
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Set,
+    Tuple,
+    Union,
+    get_args,
+    get_origin,
+    get_type_hints,
+)
 from uuid import UUID, uuid4
 
 from django.utils import timezone
@@ -132,10 +143,12 @@ def serializer_dumps(
         time: _now.time(),
         timedelta: timedelta(seconds=5),
         dict: {},
+        Dict: {},  # noqa: UP006
         Any: {},
         None: None,
         **extend_type_map,
     }
+    many_annotations = (list, tuple, set, List, Tuple, Set)  # noqa: UP006
 
     def _get_type_value(
         klass: _SerializerType,
@@ -228,7 +241,12 @@ def serializer_dumps(
                             f'у поля: "{field_name}".'
                         )
                 else:
-                    if annotation is not None and issubclass(annotation, serializers.Serializer):
+                    # support for: -> list[Serializer] or -> List[Serializer]
+                    if annotation is not None and get_origin(annotation) in many_annotations:
+                        nested_dict = _walk_fields_recursively(get_args(annotation)[0], exclude_fields)
+                        example_val[field_name] = [nested_dict]
+
+                    elif annotation is not None and issubclass(annotation, serializers.Serializer):
                         example_val[field_name] = _walk_fields_recursively(annotation, exclude_fields)
                     else:
                         example_val[field_name] = None
