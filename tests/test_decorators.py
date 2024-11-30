@@ -22,7 +22,7 @@ def test_serializer_dumps() -> None:
         'cars2': [{'car_name': 'string', 'car_price': 1}],
         'house': {'address': 'string', 'cfield': 'string'},
     }
-    if sys.version_info >= (3, 9):  # noqa: UP036
+    if sys.version_info >= (3, 9):
         expected.update({'cars3': [{'car_name': 'string', 'car_price': 1}]})
 
     assert result == expected
@@ -47,7 +47,7 @@ def test_renew_type_value() -> None:
         'cars2': [{'car_name': 'string', 'car_price': 1}],
         'house': {'address': 'string', 'cfield': 'string'},
     }
-    if sys.version_info >= (3, 9):  # noqa: UP036
+    if sys.version_info >= (3, 9):
         expected.update({'cars3': [{'car_name': 'string', 'car_price': 1}]})
 
     result1 = serializer_dumps(PersonSerializer1, renew_type_value=True)

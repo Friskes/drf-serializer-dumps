@@ -46,7 +46,7 @@ class PersonSerializer1(serializers.Serializer):
     def get_cars2(self, obj: object) -> List[PersonCars]:  # type: ignore[empty-body]  # noqa: UP006
         """It doesn't matter what to return in the test."""
 
-    if sys.version_info >= (3, 9):  # noqa: UP036
+    if sys.version_info >= (3, 9):
         cars3 = serializers.SerializerMethodField()
 
         # list[type] support added only in python >= 3.9

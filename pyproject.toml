@@ -44,7 +44,7 @@ dev = [
     "psycopg2>=2.9.9",
 
     "pre-commit>=3.5.0",
-    "ruff==0.4.1",
+    "ruff==0.8.0",
     "pytest>=7.0.1",
     "mypy>=1.10.0",
     "pytest-cov>=5.0.0",
@@ -52,7 +52,7 @@ dev = [
 ci = [
     "psycopg2>=2.9.9",
 
-    "ruff==0.4.1",
+    "ruff==0.8.0",
     "pytest>=7.0.1",
     "mypy>=1.10.0",
     "pytest-cov>=5.0.0",
@@ -107,23 +107,35 @@ disallow_subclassing_any = false  # [misc]
 disallow_untyped_calls = false  # [no-untyped-call]
 # Не ругаться на return -> Any
 warn_return_any = false  # [no-any-return]
+# Не ругаться на определение функций без аннотаций типов или с неполными аннотациями типов
+# disallow_untyped_defs = false
+# Игнор ряда кодов, глобально по проекту
+disable_error_code = [
+    "operator",
+    "assignment",
+    "union-attr",
+]
 
 
 [tool.coverage.run]
 concurrency = ["multiprocessing", "thread"]
-omit = ["*/tests/*"]
+omit = ["*/tests/*"]  # Не проверять директории и(или) файлы
 parallel = true
+branch = true  # Включать в замер результаты вхождения в условия
 source = ["src.drf_serializer_dumps"]
 
 [tool.coverage.report]
 fail_under = 80  # Тест упадёт если покрытие составит менее 80%
+skip_covered = true  # Не включать в отчет информацию о файлах со 100% покрытием
+show_missing = true  # Включать в отчет информацию о номерах не протестированных строк кода
+sort = "-Cover"  # Сортировать отчет по уровню покрытия
 
 
 # https://docs.astral.sh/ruff/settings/
 # https://docs.astral.sh/ruff/configuration/#full-command-line-interface
 # cmd: ruff format  # Отформатирует все файлы в `.` текущем каталоге.
 [tool.ruff]
-required-version = "==0.4.1"
+required-version = "<=0.8.0"
 target-version = "py312"  # Версия python которую будет обслуживать ruff
 line-length = 105  # Макс длина строки кода после которой будет выполнен автоперенос
 indent-width = 4
@@ -189,11 +201,10 @@ extend-select = [
 ]
 ignore = [
     # https://docs.astral.sh/ruff/rules/#pyflakes-f
-    # "F401",    # (не ругаться на неиспользуемые импорты)
-    # "F841",    # (не ругаться на неиспользуемые переменные)
     "F403",    # (не ругаться на использование from ... import *)
     # https://docs.astral.sh/ruff/rules/#pyupgrade-up
     "UP031",   # (не ругаться на форматирование с помощью %s)
+    "UP036",   # (не ругаться на использование sys.version_info если текущая версия не подпадает под условие)
     # https://docs.astral.sh/ruff/rules/#flake8-logging-format-g
     "G004",    # (не ругаться на использование f-строк для сообщения лога)
     # https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
@@ -205,6 +216,7 @@ ignore = [
     "PT009",   # (не ругаться на unittest ассерты)
     "PT027",   # (не ругаться на unittest ассерты)
     "PT001",   # (не ругаться на отсутствие круглых скобок у декоратора fixture)
+    "PT004",   # (не ругаться на написание фикстур которые ничего не возвращают без префикса "_")
     # https://docs.astral.sh/ruff/rules/#flake8-implicit-str-concat-isc
     "ISC001",  # (конфликт с `COM812`)
     # https://docs.astral.sh/ruff/rules/#flake8-commas-com
@@ -217,7 +229,10 @@ ignore = [
     "RET503",  # (не ругаться на отсутствие return None в конце функций)
     # https://docs.astral.sh/ruff/rules/#flake8-blind-except-ble
     "BLE001",  # (не ругаться на обработку обычного Exception)
-    # https://docs.astral.sh/ruff/rules/#flake8-django-dj  #! (ВРЕМЕННО)
+    # https://docs.astral.sh/ruff/rules/#flake8-django-dj
+    # https://docs.djangoproject.com/en/4.2/ref/models/fields/#null
+    # https://sentry.io/answers/django-difference-between-null-and-blank/
+    # https://www.django-rest-framework.org/api-guide/fields/#charfield
     "DJ001",   # (не ругаться на использование null в моделях для текстовых полей)
     # https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4
     # {} VS dict()  # https://switowski.com/blog/dict-function-vs-literal-syntax/

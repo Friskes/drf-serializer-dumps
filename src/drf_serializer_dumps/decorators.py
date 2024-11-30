@@ -43,12 +43,15 @@ def serializer_dumps(
     extend_type_map: dict[type, Any] | None = None,
 ) -> dict[str, Any]:
     """
-    - Генерирует `Example Value` для `Swagger` на основе класса сериализатора,\
-    используя названия полей, классы полей, и типы полей.
-    - Так же ищет типы в декораторе `@extend_schema_field` с `OpenApiTypes` типами.
-    - Если метод у `SerializerMethodField` возвращает вложенный сериализатор,\
-    то в качестве `type hints` необходимо указать класс этого сериализатора.
-    #### Пример 1::
+    - Generates an `Example Value` for `Swagger` based on the serializer class,\
+    using field names, field classes, and field types.
+    - It also searches for types in the decorator `@extend_schema_field` with `OpenApiTypes` types.
+    - If the `SerializerMethodField` method returns a nested serializer,\
+    then the class of this serializer must be specified as `type hints`.
+
+    ---
+
+    #### Example 1::
 
         class PersonCars(serializers.Serializer):
             car_name = serializers.CharField()
@@ -62,7 +65,7 @@ def serializer_dumps(
         serializer_dumps(PersonSerializer)
         {'name': 'string', 'age': 1, 'cars': [{'car_name': 'string', 'car_price': 1}]}
 
-    #### Пример 2::
+    #### Example 2::
 
         class Person(models.Model):
             name = models.CharField(max_length=256)
@@ -76,6 +79,8 @@ def serializer_dumps(
         serializer_dumps(PersonSerializer)
         {'id': 1, 'name': 'string', 'phones': ['string']}
 
+    ---
+
     #### Integration with drf-spectacular extend_schema decorator::
 
         @extend_schema(
@@ -87,11 +92,11 @@ def serializer_dumps(
         def your_api_method(self, request, *args, **kwargs):
             ...
 
-    - Необязательные параметры:
-        - `exclude_fields` Исключить ряд полей сериализатора при генерации словаря.
-        - `renew_type_value` Генерировать новый `uuid` и `datetime, date, time` при вызове функции.
-        - `extend_type_map` Расширить словарь типов к значениям по умолчанию,\
-        новыми типами и их значениями, либо переопределить уже существующие типы и их значения.
+    - Optional parameters:
+        - `exclude_fields` Exclude a number of serializer fields when generating a dictionary.
+        - `renew_type_value` Generate a new `uuid` and `datetime, date, time` when calling the function.
+        - `extend_type_map` Expand the type dictionary to the default values,\
+        with new types and their values, or redefine existing types and their values.
     """
     if exclude_fields is None:
         exclude_fields = []
@@ -156,7 +161,7 @@ def serializer_dumps(
         field_instance: serializers.SerializerMethodField,
     ) -> tuple[Any, Any]:
         """
-        Получить типизацию у метода SerializerMethodField
+        Get typing from the SerializerMethodField method
         """
         if field_instance.method_name is None:
             method = getattr(klass, f'get_{field_name}')
@@ -185,8 +190,8 @@ def serializer_dumps(
         klass: _SerializerType, exclude_fields: list[str] | None = None
     ) -> dict[str, Any]:
         """
-        Рекурсивно проходит по всем полям и вложенным сериализаторам
-        для генерации `Example Value`.
+        Recursively walks all fields and nested serializers
+        to generate an `Example Value'.
         """
         if exclude_fields is None:
             exclude_fields = []
@@ -237,8 +242,8 @@ def serializer_dumps(
                     else:
                         example_val[field_name] = type_value
                         print(
-                            f'Обнаружена неизвестная аннотация: "{annotation.__name__}" '
-                            f'у поля: "{field_name}".'
+                            f'An unknown annotation was found: "{annotation.__name__}" '
+                            f'by the field: "{field_name}".'
                         )
                 else:
                     # support for: -> list[Serializer] or -> List[Serializer]
@@ -251,14 +256,14 @@ def serializer_dumps(
                     else:
                         example_val[field_name] = None
                         print(
-                            f'Обнаружена неизвестная аннотация: "{type(annotation).__name__}" '
-                            f'Для поля: "{field_name}" было установлено значение "None".'
+                            f'An unknown annotation was found: "{type(annotation).__name__}" '
+                            f'For the field: "{field_name}" the value has been set "None".'
                         )
             else:
                 example_val[field_name] = None
                 print(
-                    f'Обнаружено неизвестное поле: "{type(field_instance).__name__}" '
-                    f'Для поля: "{field_name}" было установлено значение "None".'
+                    f'An unknown field has been detected: "{type(field_instance).__name__}" '
+                    f'For the field: "{field_name}" the value has been set "None".'
                 )
 
         return example_val
